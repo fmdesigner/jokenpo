@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <style>
+        body{
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        audio, .game{
+            display: none;
+        }
+        .main{
+            background: rgb(213,229,254);
+            background: linear-gradient(137deg, rgba(213,229,254,1) 0%, rgba(255,243,247,1) 77%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        
+        /*Animações*/
+        @keyframes fade-in-move-down{
+            0% {opacity: 0;transform: translateY(-3rem);}
+            100% {opacity: 1;transform: translateY(0);}
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(.90);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .pulse {
+            animation-name: pulse;
+            animation-duration: .7s;
+            animation-timing-function: ease-out;
+            animation-direction: alternate;
+            animation-iteration-count: infinite;
+            animation-play-state: running;
+        }
+
+        .anime-down{
+            opacity: 0;
+            animation-name: fade-in-move-down;
+            animation-duration: 0.5s;
+            animation-fill-mode: forwards;
+        }
+
+        
+        
+        
+        .container-game{
+            background: #fff;
+            width: 60%;
+            margin: 0 auto;
+            border-radius: 10px;
+            padding: 30px;
+            box-sizing: border-box;
+            -webkit-box-shadow: -11px 10px 17px -10px rgba(0,0,0,0.24);
+            -moz-box-shadow: -11px 10px 17px -10px rgba(0,0,0,0.24);
+            box-shadow: -11px 10px 17px -10px rgba(0,0,0,0.24);
+            position: relative;
+        }
+        .game{
+            text-align: center;
+        }
+        .game .jogar, .game-over .reiniciar, .endgame .reiniciar, .game-empate .reiniciar, .boas-vindas .start{
+            border: 0;
+            background: rgb(155 179 236);
+            background: linear-gradient(137deg, rgb(138 179 243) 0%, rgb(245 176 199) 77%);
+            color: #fff;
+            padding: 12px 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 40px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .jogar:disabled,
+        .jogar[disabled]{
+            background: #cecece;
+        }
+        .game .jogar:hover{
+            background: #91a0d2;
+        }
+        
+        /*Placar*/
+        .placar{
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            padding: 14px 0;
+            margin-bottom: 25px;
+            border-radius: 20px;
+            background: rgb(213,229,254);
+            background: linear-gradient(298deg, rgba(213,229,254,1) 0%, rgba(255,243,247,1) 77%);
+        }
+        .placar h3 {
+            text-transform: uppercase;
+            margin: 0;
+            font-size: 22px;
+            padding: 10px 0 2px 0;
+            color: #6273a9;
+            
+        }
+        .placar .valores{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .placar .valores div {
+            margin: 3px;
+            box-sizing: border-box;
+            text-align: center;
+            padding: 6px;
+        }
+        .placar .valores div p {
+            margin: 0;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: #aabee9;
+            font-weight: bold;
+        }
+        .placar .valores div span{
+            color: #aabee9;
+            font-weight: bolder;
+        }
+        
+        /*Escolhas*/
+        
+        .escolhas{
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-around;
+        }
+        .escolhas h4{
+            margin: 0;
+            font-size: 55px;
+            color: #b0bce2;
+        }
+        .player{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .player .foto {
+            width: 150px;
+            height: 150px;
+            background: #cecece;
+            border-radius: 50%;
+            position: relative;
+            background: url(imgs/kiki-normal.jpg);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .player.adv-foto .foto{
+            background: url(imgs/tombo-normal.png);
+            background-size: cover;
+            background-position: center;
+        }
+        .player .foto div {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            right: -20px;
+            top: 14%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            line-height: 1;
+            background: linear-gradient(to right, white, white), linear-gradient(to right, #d9e6fd , #f5d7e1);
+            background-clip: padding-box, border-box;
+            background-origin: padding-box, border-box;
+            border: 2px solid transparent;
+        }
+        .player.adversario .foto div{
+            right: 0;
+            left: -20px;
+        }
+        .player-opcoes {
+            display: flex;
+            justify-content: space-between;
+        }
+        .player.adversario .icons{
+            display: flex;
+        }
+        .player.adversario .icons span{
+            cursor: context-menu!important;
+            filter: grayscale(1);
+        }
+        
+        /* muda a foto de acordo com o resultado */
+        .ganhou .player .foto{
+            background: url(imgs/kiki-happy.png);
+            background-size: cover;
+            background-position: center top;
+        }
+        .ganhou .player.adv-foto .foto{
+            background: url(imgs/tombo-sad.png);
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .perdeu .player .foto{
+            background: url(imgs/kiki-sad.png);
+            background-size: cover;
+            background-position: center top;
+        }
+        .perdeu .player.adv-foto .foto{
+            background: url(imgs/tombo-happy.png);
+            background-size: cover;
+            background-position: center;
+        }
+        .perdeu .player.adversario .icons span, .empatou .player.adversario .icons span, .ganhou .player.adversario .icons span{
+            filter: grayscale(0);
+        }
+        
+        
+        .empatou .player .foto{
+            background: url(imgs/kiki-sad.png);
+            background-size: cover;
+            background-position: center top;
+        }
+        .empatou .player.adv-foto .foto{
+            background: url(imgs/tombo-sad.png);
+            background-size: cover;
+            background-position: center;
+        }
+
+        
+        
+        
+        .resultado {
+            text-align: center;
+            min-height: 120px;
+            min-width: 175px;
+            margin-top: 40px;
+        }
+        .resultado p{
+            margin: 5px 0;
+            font-weight: bold;
+            color: #6273a9;
+            text-transform: uppercase;
+        }
+        /*Game OVER */
+        .game-over, .endgame, .game-empate{
+            display: none;
+        }
+        .game-over.visible, .endgame.visible, .game-empate.visible{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #fff;
+            height: 100%;
+            border-radius: 10px;
+
+        }
+        .game-over.visible .player .foto div, .endgame.visible .player .foto div, .game-empate.visible .player .foto div{
+            display: none;
+        }
+        .game-over.visible .player .foto {
+            background: url(imgs/kiki-game-over.gif);
+            background-size: cover;
+            background-position: center;
+            width: 250px;
+            height: 250px;
+        }
+        .endgame.visible .player .foto{
+            background: url(imgs/kiki-vencedora.gif);
+            background-size: cover;
+            background-position: center;
+            width: 250px;
+            height: 250px;
+        }
+        .game-empate.visible .player .foto{
+            background: url(imgs/kiki-e-tombo-empate.gif);
+            background-size: cover;
+            background-position: center;
+            width: 250px;
+            height: 250px;
+        }
+        .game-over h2, .endgame h2, .game-empate h2 {
+            margin: 10px 0 0 0;
+            color: #aabee9;
+            text-transform: uppercase;
+            font-size: 28px;
+        }
+        .game-over h3, .endgame h3, .game-empate h3 {
+            color: #6273a9;
+            margin: 5px 0 11px 0;
+        }
+        /*Boas vindas*/
+        .boas-vindas-container{
+            display: flex;
+            flex-direction: row;
+            padding: 10px 0;
+            justify-content: center;
+        }
+        .boas-vindas-container .text{
+            margin: 0 20px 0 0;
+        }
+        .boas-vindas .foto {
+            width: 35%;
+            height: 320px;
+            border-radius: 30px;
+            background: url(imgs/kiki-e-tombo-boas-vindas.gif);
+            background-position: center;
+        }
+        .boas-vindas h2{
+            margin: 0;
+            font-size: 22px;
+            padding: 10px 0 2px 0;
+            color: #6273a9;
+        }
+        .boas-vindas h2 span{
+            font-size: 14px;
+            padding: 1px 10px;
+            background: rgb(155 179 236);
+            background: linear-gradient(137deg, rgb(138 179 243) 0%, rgb(245 176 199) 77%);
+            color: #fff;
+            border-radius: 10px;
+        }
+        .boas-vindas h3 {
+            color: #8ca4d8;
+            font-size: 15px;
+            font-weight: normal;
+            margin: 0 0 20px 0;
+        }
+        .boas-vindas h4{
+            margin: 10px 0;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: #6273a9;
+        }
+        .boas-vindas ul{
+            list-style: none;
+            padding: 0 20px 0;
+            margin: 0 0 20px 0;
+        }
+        .boas-vindas ul li{
+            font-size: 14px;
+            margin: 8px 0;
+            color: #6273a9;
+        }
+        .boas-vindas ul li::before {
+          content: "\2022";
+          color: #8ca4d8;
+          font-weight: bold;
+          display: inline-block; 
+          width: 1em;
+          margin-left: -1em;
+        }
+        
+        .boas-vindas h5{
+            margin: 10px 0;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: #6273a9;
+        }
+        
+        /*Radio*/
+        fieldset {
+            border: 0;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            display: flex;
+        }
+        fieldset label {
+            width: 100%;
+        }
+        .radio-image label > input{
+            visibility: hidden;
+            border: 0;
+            opacity: 0;
+            margin: 0;
+            position: absolute;
+        }
+        .radio-image span, .player.adversario .icons span {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            border-radius: 50%;
+            padding: 0;
+            font-size: 28px;
+            line-height: 1;
+            align-items: center;
+            justify-content: center;
+            margin: 8px 3px;
+            background: linear-gradient(to right, white, white), linear-gradient(to right, #d9e6fd , #f5d7e1);
+            background-clip: padding-box, border-box;
+            background-origin: padding-box, border-box;
+            border: 2px solid transparent;
+        }
+        
+        
+        /*Copy*/
+        .copy{
+            position: absolute;
+            left: 50%;
+            margin-left: -175px;
+            bottom: -55px;
+            color: #9eabd5;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .copy p{
+            margin: 0;
+        }
+        .copy a{
+            margin: 0 2px 0 0;
+        }
+        .copy svg{
+            width: 30px;
+            fill: #9eabd5;
+            opacity: .5;
+        }
+        .copy a:first-child svg{
+            width: 35px;
+            
+        }
+        .copy a:first-child{
+            margin: 0;
+        }
+        .copy svg:hover{
+            opacity: 1;
+        }
+        .icons-copy{
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        /* Responsivo */
+        @media only screen and (max-width: 1190px) {
+            .boas-vindas ul li br{
+                display: none;
+            }
+            .boas-vindas .foto{
+                width: 480px;
+            }
+        }
+        
+        @media only screen and (max-width: 1080px) {
+            .main {
+/*                min-height: auto;*/
+                padding: 0 0 60px 0;
+            }
+            .boas-vindas-container{
+                flex-direction: column-reverse;
+                justify-content: center;
+                align-items: center;
+            }
+            .boas-vindas .foto, .boas-vindas-container .text{
+                width: 80%;
+            }
+            .boas-vindas-container .text{
+                margin: 0 auto;
+            }
+            .boas-vindas h2{
+                margin-top: 15px;
+            }
+            .resultado{
+                min-width: 110px;
+            }
+        }
+        
+        @media only screen and (max-width: 800px) {
+            .container-game{
+                width: 80%;
+                padding: 20px;
+            }
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .container-game, .boas-vindas .foto, .boas-vindas-container .text{
+                width: 90%;
+            }
+            .placar{
+                padding: 4px 0;
+            }
+            .resultado {
+                min-width: 60px;
+                margin-top: 0;
+            }
+            .player .foto{
+                width: 90px;
+                height: 90px;
+            }
+            .radio-image span, .player.adversario .icons span, .player .foto div{
+                font-size: 24px;
+                width: 30px;
+                height: 30px;
+            }
+            
+            .game-over.visible .player .foto, .endgame.visible .player .foto, .game-empate.visible .player .foto{
+                width: 200px;
+                height: 200px;
+            }
+            .copy{
+                flex-direction: column;
+                margin-left: -124px;
+                bottom: -72px;
+            }
+        }
+
+        @media only screen and (max-width: 470px) {
+            .game-over.visible .player .foto, .endgame.visible .player .foto, .game-empate.visible .player .foto {
+                width: 150px;
+                height: 150px;
+            }
+            .boas-vindas h2{
+                display: flex;
+                flex-direction: column-reverse;
+                align-items: flex-start;
+                font-size: 18px;
+            }
+            .boas-vindas h3{
+                font-size: 14px;
+            }
+            .boas-vindas h2 span{
+                margin-bottom: 4px;
+            }
+            .placar .valores div{
+                margin-top: 0;
+            }
+            
+            .radio-image span, .player.adversario .icons span{
+                margin: 8px 2px;
+            }
+            .escolhas h4{
+                font-size: 42px;
+            }
+            .resultado p{
+                font-size: 15px;
+            }
+        }
+        
+        @media only screen and (max-width: 370px) {
+            .container-game, .boas-vindas .foto, .boas-vindas-container .text{
+                width: 94%;
+            }
+            .player .foto div{
+                right: -14px;
+            }
+            .player.adversario .foto div{
+                left: -14px;
+            }
+            .radio-image span, .player.adversario .icons span, .player .foto div{
+                font-size: 20px;
+                width: 27px;
+                height: 27px;
+            }
+            .resultado p, .placar .valores div span{
+                font-size: 12px;
+            }
+            .placar h3{
+                font-size: 18px;
+            }
+            .placar .valores div p{
+                font-size: 13px;
+            }
+            
+        }
+        
+        
+    </style>
+</head>
+<body>
+       
+       
+    <section class="main">
+        
+        <div class="container-game">
+            <!-- Container boas vindas -->
+            <div class="boas-vindas anime-down">
+               
+                <div class="boas-vindas-container">
+                   <div class="text">
+                       <h2>Kiki's Delivery Service <span>Jokenpô</span></h2>
+                       <h3>Jogue pedra, papel ou tesoura com a Kiki e o Tombo! </h3>
+
+                       <h4>Regras:</h4>
+                       <ul>
+                           <li>Clique em começar para iniciar o jogo</li>
+                           <li>Clique nos ícones de pedra 👊, papel ✋ e tesoura ✌️<br>para escolher, em seguida clique em jogar</li>
+                           <li>O vencedor é quem marcar primeiro <strong>3 pontos</strong></li>
+                           <li>Ao final do jogo você pode clicar em <br>Reiniciar para jogar novamente</li>
+<!--                           <li>Para tirar os efeitos sonoros clique no ícone</li>-->
+                       </ul>
+
+                       
+                        <button class="start pulse">Começar</button>
+                   </div>
+                   <div class="foto"></div>
+                   
+                </div>
+                
+            </div>
+            <!-- Container Game -->
+            <div class="game">
+               <!-- Placar -->
+                <div class="placar">
+                    <h3>Placar</h3>
+                    <div class="valores">
+                        <div><p>vitórias</p><span class="vitoria">0</span></div>
+                        <div><p>derrotas</p><span class="derrota">0</span></div>
+                        <div><p>empates</p> <span class="empate">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="escolhas">
+                    <div class="player">
+                        <div class="foto">
+                            <div></div>
+                        </div>
+                       
+                        <div class="player-opcoes">
+                            <fieldset class="radio-image">
+                                <label for="pedra">
+                                    <input type="radio" id="pedra" name="option" value="pedra">
+                                    <span>👊</span>
+
+                                </label>
+                                
+                                
+                                
+                            </fieldset>
+
+                            <fieldset class="radio-image">
+                                <label for="papel">
+                                    <input type="radio" name="option" id="papel" value="papel">
+                                    <span>✋</span>
+
+                                </label>
+                                
+                            </fieldset>
+
+                            <fieldset class="radio-image">
+                                <label for="tesoura">
+                                    <input type="radio" name="option" id="tesoura" value="tesoura">
+                                    <span>✌️</span>
+
+                                </label>
+                                
+                            </fieldset>
+                        </div>
+                        
+                        
+                    </div>
+                    
+                    
+                    <div class="resultado">
+                        <h4>x</h4>
+                        <p></p>
+                    </div>
+                    
+                    <div class="player adv-foto adversario">
+                        <div class="foto">
+                            <div style="color: #b0bce2; font-weight: bold;" class="escolha-adv">?</div>
+                        </div>
+                        
+                        <div class="icons">
+                            <span data-brackets-id="6134">👊</span>
+                            <span data-brackets-id="6138">✋</span>
+                            <span data-brackets-id="6142">✌️</span>
+                        </div>
+                       
+                    </div>
+                </div>
+                
+        
+                
+                
+                <button class="jogar">Jogar</button>
+                
+            </div>
+            
+            <!-- Container Game Over -->
+            <div class="game-over">
+                <div class="player">
+                    <div class="foto">
+                        <div></div>
+                    </div>
+                </div>
+                <h2>Que pena!</h2>
+                <h3>Você perdeu =( </h3>
+                
+                <button class="reiniciar">Jogar novamente</button>
+            </div>
+            
+            <!-- Container Fim de jogo -->
+            <div class="endgame">
+                <div class="player">
+                    <div class="foto">
+                        <div></div>
+                    </div>
+                </div>
+               
+                <h2>Parabéns!</h2>
+                <h3>Você ganhou =)</h3>
+                <button class="reiniciar">Jogar novamente</button>
+            </div>
+            
+            <!-- Container Empate -->
+            <div class="game-empate">
+                <div class="player">
+                    <div class="foto">
+                        <div></div>
+                    </div>
+                </div>
+               
+                <h2>Empate!</h2>
+                <h3>Clique para jogar novamente</h3>
+                <button class="reiniciar">Reiniciar</button>
+            </div>
+            
+            <div class="copy anime"><p>Desenvolvido por: Fernanda Mendes</p> 
+                <div class="icons-copy">
+                    <a href="https://fernandamendes.myportfolio.com/" target="_blank"><svg fill="#000000" width="200px" viewBox="-1 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M16.5 9.5a8 8 0 1 1-8-8 8 8 0 0 1 8 8zm-2.97.006a5.03 5.03 0 1 0-5.03 5.03 5.03 5.03 0 0 0 5.03-5.03zm-7.383-.4H4.289a4.237 4.237 0 0 1 2.565-3.498q.1-.042.2-.079a7.702 7.702 0 0 0-.907 3.577zm0 .8a7.7 7.7 0 0 0 .908 3.577q-.102-.037-.201-.079a4.225 4.225 0 0 1-2.565-3.498zm.8-.8a9.04 9.04 0 0 1 .163-1.402 6.164 6.164 0 0 1 .445-1.415c.289-.615.66-1.013.945-1.013.285 0 .656.398.945 1.013a6.18 6.18 0 0 1 .445 1.415 9.078 9.078 0 0 1 .163 1.402zm3.106.8a9.073 9.073 0 0 1-.163 1.402 6.187 6.187 0 0 1-.445 1.415c-.289.616-.66 1.013-.945 1.013-.285 0-.656-.397-.945-1.013a6.172 6.172 0 0 1-.445-1.415 9.036 9.036 0 0 1-.163-1.402zm1.438-3.391a4.211 4.211 0 0 1 1.22 2.591h-1.858a7.698 7.698 0 0 0-.908-3.577q.102.037.201.08a4.208 4.208 0 0 1 1.345.906zm-.638 3.391h1.858a4.238 4.238 0 0 1-2.565 3.498q-.1.043-.2.08a7.697 7.697 0 0 0 .907-3.578z"></path></g></svg></a>
+                   
+                   
+                    <a href="https://www.linkedin.com/in/fernanda-mendes/" target="_blank"> <svg fill="#000000" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-143 145 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M113,145c-141.4,0-256,114.6-256,256s114.6,256,256,256s256-114.6,256-256S254.4,145,113,145z M41.4,508.1H-8.5V348.4h49.9 V508.1z M15.1,328.4h-0.4c-18.1,0-29.8-12.2-29.8-27.7c0-15.8,12.1-27.7,30.5-27.7c18.4,0,29.7,11.9,30.1,27.7 C45.6,316.1,33.9,328.4,15.1,328.4z M241,508.1h-56.6v-82.6c0-21.6-8.8-36.4-28.3-36.4c-14.9,0-23.2,10-27,19.6 c-1.4,3.4-1.2,8.2-1.2,13.1v86.3H71.8c0,0,0.7-146.4,0-159.7h56.1v25.1c3.3-11,21.2-26.6,49.8-26.6c35.5,0,63.3,23,63.3,72.4V508.1z "></path> </g></svg></a>
+                    
+                    <a href="https://www.behance.net/fernandamendes" target="_blank"><svg fill="#000000" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M344.1,244.5c-4.9-4.2-11-6.3-18.2-6.3c-7.8,0-13.9,2.2-18.3,6.7c-4.3,4.5-7,10.5-8.2,18.1h52.7 C351.7,254.9,348.9,248.8,344.1,244.5z"></path> <path d="M214.3,266.1c-3.8-1.7-9-2.6-15.8-2.7h-39v42.2H198c6.9,0,12.2-0.9,16-2.8c7-3.5,10.4-10,10.4-19.7 C224.4,274.9,221,269.2,214.3,266.1z"></path> <path d="M256,0C114.6,0,0,114.6,0,256s114.6,256,256,256s256-114.6,256-256S397.4,0,256,0z M291.6,182.3h67.8V202h-67.8 L291.6,182.3L291.6,182.3z M250.7,310.6c-3,4.9-6.7,9.1-11.2,12.4c-5,3.9-11,6.5-17.9,8c-6.9,1.4-14.3,2.1-22.4,2.1H128V174.9h76.5 c19.3,0.3,33,5.9,41,16.9c4.8,6.7,7.2,14.8,7.2,24.2c0,9.6-2.4,17.4-7.3,23.3c-2.7,3.3-6.8,6.3-12.1,9c8.1,3,14.2,7.6,18.3,14 s6.2,14.1,6.2,23.2C257.8,294.7,255.4,303.1,250.7,310.6z M384,283.2h-85.2c0.5,11.7,4.5,20,12.2,24.7c4.7,2.9,10.3,4.4,16.9,4.4 c6.9,0,12.6-1.8,17-5.4c2.4-1.9,4.5-4.6,6.3-8.1h31.2c-0.8,6.9-4.6,14-11.3,21.2c-10.5,11.4-25.1,17.1-44,17.1 c-15.6,0-29.3-4.8-41.2-14.4c-11.9-9.6-17.9-25.2-17.9-46.8c0-20.3,5.4-35.8,16.1-46.6c10.8-10.8,24.7-16.2,41.8-16.2 c10.2,0,19.4,1.8,27.5,5.5c8.2,3.6,14.9,9.4,20.2,17.3c4.8,6.9,7.9,15,9.3,24.2C383.8,265.4,384.1,273.1,384,283.2z"></path> <path d="M214.8,233.3c4.3-2.6,6.4-7.3,6.4-13.9c0-7.4-2.8-12.2-8.5-14.6c-4.9-1.6-11.1-2.5-18.7-2.5h-34.4v34.9H198 C204.9,237.3,210.4,236,214.8,233.3z"></path> </g> </g></svg></a>
+                    
+                    <a href="https://github.com/fmdesigner" target="_blank"><svg fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>github</title> <path d="M16 1.375c-8.282 0-14.996 6.714-14.996 14.996 0 6.585 4.245 12.18 10.148 14.195l0.106 0.031c0.75 0.141 1.025-0.322 1.025-0.721 0-0.356-0.012-1.3-0.019-2.549-4.171 0.905-5.051-2.012-5.051-2.012-0.288-0.925-0.878-1.685-1.653-2.184l-0.016-0.009c-1.358-0.93 0.105-0.911 0.105-0.911 0.987 0.139 1.814 0.718 2.289 1.53l0.008 0.015c0.554 0.995 1.6 1.657 2.801 1.657 0.576 0 1.116-0.152 1.582-0.419l-0.016 0.008c0.072-0.791 0.421-1.489 0.949-2.005l0.001-0.001c-3.33-0.375-6.831-1.665-6.831-7.41-0-0.027-0.001-0.058-0.001-0.089 0-1.521 0.587-2.905 1.547-3.938l-0.003 0.004c-0.203-0.542-0.321-1.168-0.321-1.821 0-0.777 0.166-1.516 0.465-2.182l-0.014 0.034s1.256-0.402 4.124 1.537c1.124-0.321 2.415-0.506 3.749-0.506s2.625 0.185 3.849 0.53l-0.1-0.024c2.849-1.939 4.105-1.537 4.105-1.537 0.285 0.642 0.451 1.39 0.451 2.177 0 0.642-0.11 1.258-0.313 1.83l0.012-0.038c0.953 1.032 1.538 2.416 1.538 3.937 0 0.031-0 0.061-0.001 0.091l0-0.005c0 5.761-3.505 7.029-6.842 7.398 0.632 0.647 1.022 1.532 1.022 2.509 0 0.093-0.004 0.186-0.011 0.278l0.001-0.012c0 2.007-0.019 3.619-0.019 4.106 0 0.394 0.262 0.862 1.031 0.712 6.028-2.029 10.292-7.629 10.292-14.226 0-8.272-6.706-14.977-14.977-14.977-0.006 0-0.013 0-0.019 0h0.001z"></path> </g></svg></a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </section>
+    
+    <!-- Audio -->
+   <audio
+      src="sons/vitoria.mp3"
+      class="som"
+      id="som-vitoria"
+      preload="auto"
+    ></audio>
+    <audio
+      src="sons/derrota.mp3"
+      class="som"
+      id="som-derrota"
+      preload="auto"
+    ></audio>
+    <audio
+      src="sons/select.mp3"
+      class="som"
+      id="som-select"
+      preload="auto"
+    ></audio>
+
+    <script>
+    
+        /*Opções*/
+        const inputRadio = document.querySelectorAll('input[name=option]');
+        const game = document.querySelector('.game');
+        const boasvindas = document.querySelector('.boas-vindas');
+        
+        /*Placar*/
+        var vitoria = 0;
+        var derrota = 0;
+        var empate = 0;
+        
+        
+        /* Ativa o botão ao selecionar opção */
+        inputRadio.forEach((elem) => {
+            elem.addEventListener("change", function(event) {
+                buttonJogar.disabled = false;
+            });
+        });
+
+        
+        /*Botões*/
+        const buttonStart = document.querySelector('.start');
+        const buttonJogar = document.querySelector('.jogar');
+        const buttonReiniciar = document.querySelectorAll('.reiniciar');
+        
+        
+        /*Iniciar jogo*/
+        buttonStart.addEventListener('click', function() {
+            boasvindas.style.display = 'none';
+            game.style.display = 'block';
+        })
+        
+        
+        buttonJogar.disabled = true;
+        
+        /* Itens do jogo */
+        const adversario = document.querySelector('.adversario span');
+        var jokenpo = ['👊', '✋', '✌️'];
+        const resultado = document.querySelector('.resultado p')
+        
+        
+        
+        
+        const icons = document.querySelectorAll('input[name="option"]');
+        const iconEscolhido = document.querySelector('.foto div');
+        icons.forEach(function(icon) {
+            
+            icon.addEventListener('click', function() {
+                const iconSpan = icon.nextElementSibling.innerText;
+                iconEscolhido.innerText = iconSpan;
+                
+                 document.querySelector('#som-select').cloneNode().play();
+                 document.querySelector('.escolha-adv').innerText = '?';
+                 resultado.innerText = '';
+                
+                 game.classList.remove('ganhou');
+                 game.classList.remove('perdeu');
+                 game.classList.remove('empatou');
+                
+            })
+
+           
+        })
+        
+
+        
+        /* Contdown */
+        function countdown() {
+            
+            game.classList.remove('ganhou');
+            game.classList.remove('perdeu');
+            game.classList.remove('empatou');
+            document.querySelector('.escolha-adv').innerText = '?';
+            resultado.innerText = '';
+            
+            
+            setTimeout(() => {
+                resultado.innerText = "Jo";
+            }, 500)
+            
+            setTimeout(() => {
+                resultado.innerText = "Ken";
+            }, 1000)
+            
+            setTimeout(() => {
+                resultado.innerText = "Pô";
+            }, 1500)
+            
+            
+            setTimeout(() => {
+                comparar();
+            }, 2000)
+        }
+        
+        function comparar() {
+            
+            const inputValor = document.querySelector('input[name="option"]:checked').value;
+            var jokenpoArray = jokenpo[Math.floor(Math.random() * jokenpo.length)];
+
+            /*Empate*/
+            function initEmpate() {
+                placarEmpate = empate++; 
+                resultado.innerText = 'Empate 😕'; 
+                document.querySelector('.empate').innerText = placarEmpate + 1; 
+                
+                document.querySelector('.escolha-adv').innerText = jokenpoArray;
+                document.querySelector('#som-derrota').play();
+                game.classList.add('empatou');
+               
+                
+            }
+            
+            /*Derrota*/
+            function initDerrota() {
+                var placarDerrota = derrota++; 
+                resultado.innerText = 'Derrota 😥'; 
+                document.querySelector('.derrota').innerText = placarDerrota + 1; 
+                
+                document.querySelector('.escolha-adv').innerText = jokenpoArray;
+                document.querySelector('#som-derrota').play();
+                game.classList.add('perdeu');
+            }
+            
+            /*Vitoria*/
+            function initVitoria() {
+                var placarVitoria = vitoria++; 
+                resultado.innerText = 'Vitoria 😆'; 
+                document.querySelector('.vitoria').innerText = placarVitoria + 1; 
+                
+                document.querySelector('.escolha-adv').innerText = jokenpoArray;
+                document.querySelector('#som-vitoria').play();
+                game.classList.add('ganhou');
+                
+                
+            }
+            
+            /* Fim de jogo */
+            function gameOver() {
+               document.querySelector('.game-over').classList.add('visible');
+            }
+            function endGame() {
+                document.querySelector('.endgame').classList.add('visible');
+            }
+            function gameEmpate() {
+                document.querySelector('.game-empate').classList.add('visible');
+            }
+            
+
+            /* IFs */
+            if(inputValor === 'pedra' && jokenpoArray === '👊' || inputValor === 'papel' && jokenpoArray === '✋' || inputValor === 'tesoura' && jokenpoArray === '✌️') { 
+                initEmpate();
+            } else if(inputValor === 'pedra' && jokenpoArray === '✋' || inputValor === 'papel' && jokenpoArray === '✌️' || inputValor === 'tesoura' && jokenpoArray === '👊'){
+                initDerrota();   
+            } else if(inputValor === 'pedra' && jokenpoArray === '✌️' || inputValor === 'papel' && jokenpoArray === '👊' || inputValor === 'tesoura' && jokenpoArray === '✋') {
+                initVitoria(); 
+            }
+            
+             
+            if(vitoria > 2) {
+                endGame();
+            } else if (empate > 2) {
+                gameEmpate();
+            } else if (derrota > 2) {
+                gameOver();
+                
+            }
+            
+            
+            
+            
+        } 
+       
+        function reiniciar() {
+            vitoria = 0;
+            derrota = 0;
+            empate = 0;
+            
+            document.querySelector('.vitoria').innerText = 0;
+            document.querySelector('.derrota').innerText = 0;
+            document.querySelector('.empate').innerText = 0;
+            
+            inputRadio.forEach((elem) => {
+                elem.checked = false;
+            });
+            
+            buttonJogar.disabled = true;
+            
+            document.querySelector('.game-over').classList.remove('visible');
+            document.querySelector('.endgame').classList.remove('visible');
+            document.querySelector('.game-empate').classList.remove('visible');
+            
+            game.classList.remove('ganhou');
+            game.classList.remove('perdeu');
+            game.classList.remove('empatou');
+            
+            resultado.innerText = '';
+            document.querySelector('.escolha-adv').innerText = '?';
+            iconEscolhido.innerText = '';
+            
+            
+
+        }    
+        
+        buttonJogar.addEventListener('click', countdown);
+        buttonReiniciar.forEach((btn) => {
+           btn.addEventListener('click', reiniciar);
+        })
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </script>
+    
+</body>
+</html>
