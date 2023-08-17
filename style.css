@@ -1,0 +1,577 @@
+body{
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+audio, .game{
+    display: none;
+}
+.main{
+    background: rgb(213,229,254);
+    background: linear-gradient(137deg, rgba(213,229,254,1) 0%, rgba(255,243,247,1) 77%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/*Animações*/
+@keyframes fade-in-move-down{
+    0% {opacity: 0;transform: translateY(-3rem);}
+    100% {opacity: 1;transform: translateY(0);}
+}
+@keyframes pulse {
+    0% {
+        transform: scale(.90);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.pulse {
+    animation-name: pulse;
+    animation-duration: .7s;
+    animation-timing-function: ease-out;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    animation-play-state: running;
+}
+
+.anime-down{
+    opacity: 0;
+    animation-name: fade-in-move-down;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+
+
+
+.container-game{
+    background: #fff;
+    width: 60%;
+    margin: 0 auto;
+    border-radius: 10px;
+    padding: 30px;
+    box-sizing: border-box;
+    -webkit-box-shadow: -11px 10px 17px -10px rgba(0,0,0,0.24);
+    -moz-box-shadow: -11px 10px 17px -10px rgba(0,0,0,0.24);
+    box-shadow: -11px 10px 17px -10px rgba(0,0,0,0.24);
+    position: relative;
+}
+.game{
+    text-align: center;
+}
+.game .jogar, .game-over .reiniciar, .endgame .reiniciar, .game-empate .reiniciar, .boas-vindas .start{
+    border: 0;
+    background: rgb(155 179 236);
+    background: linear-gradient(137deg, rgb(138 179 243) 0%, rgb(245 176 199) 77%);
+    color: #fff;
+    padding: 12px 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-radius: 40px;
+    font-family: 'Montserrat', sans-serif;
+}
+.jogar:disabled,
+.jogar[disabled]{
+    background: #cecece;
+}
+.game .jogar:hover{
+    background: #91a0d2;
+}
+
+/*Placar*/
+.placar{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 0;
+    margin-bottom: 25px;
+    border-radius: 20px;
+    background: rgb(213,229,254);
+    background: linear-gradient(298deg, rgba(213,229,254,1) 0%, rgba(255,243,247,1) 77%);
+}
+.placar h3 {
+    text-transform: uppercase;
+    margin: 0;
+    font-size: 22px;
+    padding: 10px 0 2px 0;
+    color: #6273a9;
+    
+}
+.placar .valores{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.placar .valores div {
+    margin: 3px;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 6px;
+}
+.placar .valores div p {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #aabee9;
+    font-weight: bold;
+}
+.placar .valores div span{
+    color: #aabee9;
+    font-weight: bolder;
+}
+
+/*Escolhas*/
+
+.escolhas{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+}
+.escolhas h4{
+    margin: 0;
+    font-size: 55px;
+    color: #b0bce2;
+}
+.player{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.player .foto {
+    width: 150px;
+    height: 150px;
+    background: #cecece;
+    border-radius: 50%;
+    position: relative;
+    background: url(imgs/kiki-normal.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.player.adv-foto .foto{
+    background: url(imgs/tombo-normal.png);
+    background-size: cover;
+    background-position: center;
+}
+.player .foto div {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: -20px;
+    top: 14%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    line-height: 1;
+    background: linear-gradient(to right, white, white), linear-gradient(to right, #d9e6fd , #f5d7e1);
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    border: 2px solid transparent;
+}
+.player.adversario .foto div{
+    right: 0;
+    left: -20px;
+}
+.player-opcoes {
+    display: flex;
+    justify-content: space-between;
+}
+.player.adversario .icons{
+    display: flex;
+}
+.player.adversario .icons span{
+    cursor: context-menu!important;
+    filter: grayscale(1);
+}
+
+/* muda a foto de acordo com o resultado */
+.ganhou .player .foto{
+    background: url(imgs/kiki-happy.png);
+    background-size: cover;
+    background-position: center top;
+}
+.ganhou .player.adv-foto .foto{
+    background: url(imgs/tombo-sad.png);
+    background-size: cover;
+    background-position: center;
+}
+
+.perdeu .player .foto{
+    background: url(imgs/kiki-sad.png);
+    background-size: cover;
+    background-position: center top;
+}
+.perdeu .player.adv-foto .foto{
+    background: url(imgs/tombo-happy.png);
+    background-size: cover;
+    background-position: center;
+}
+.perdeu .player.adversario .icons span, .empatou .player.adversario .icons span, .ganhou .player.adversario .icons span{
+    filter: grayscale(0);
+}
+
+
+.empatou .player .foto{
+    background: url(imgs/kiki-sad.png);
+    background-size: cover;
+    background-position: center top;
+}
+.empatou .player.adv-foto .foto{
+    background: url(imgs/tombo-sad.png);
+    background-size: cover;
+    background-position: center;
+}
+
+
+
+
+.resultado {
+    text-align: center;
+    min-height: 120px;
+    min-width: 175px;
+    margin-top: 40px;
+}
+.resultado p{
+    margin: 5px 0;
+    font-weight: bold;
+    color: #6273a9;
+    text-transform: uppercase;
+}
+/*Game OVER */
+.game-over, .endgame, .game-empate{
+    display: none;
+}
+.game-over.visible, .endgame.visible, .game-empate.visible{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    height: 100%;
+    border-radius: 10px;
+
+}
+.game-over.visible .player .foto div, .endgame.visible .player .foto div, .game-empate.visible .player .foto div{
+    display: none;
+}
+.game-over.visible .player .foto {
+    background: url(imgs/kiki-game-over.gif);
+    background-size: cover;
+    background-position: center;
+    width: 250px;
+    height: 250px;
+}
+.endgame.visible .player .foto{
+    background: url(imgs/kiki-vencedora.gif);
+    background-size: cover;
+    background-position: center;
+    width: 250px;
+    height: 250px;
+}
+.game-empate.visible .player .foto{
+    background: url(imgs/kiki-e-tombo-empate.gif);
+    background-size: cover;
+    background-position: center;
+    width: 250px;
+    height: 250px;
+}
+.game-over h2, .endgame h2, .game-empate h2 {
+    margin: 10px 0 0 0;
+    color: #aabee9;
+    text-transform: uppercase;
+    font-size: 28px;
+}
+.game-over h3, .endgame h3, .game-empate h3 {
+    color: #6273a9;
+    margin: 5px 0 11px 0;
+}
+/*Boas vindas*/
+.boas-vindas-container{
+    display: flex;
+    flex-direction: row;
+    padding: 10px 0;
+    justify-content: center;
+}
+.boas-vindas-container .text{
+    margin: 0 20px 0 0;
+}
+.boas-vindas .foto {
+    width: 35%;
+    height: 320px;
+    border-radius: 30px;
+    background: url(imgs/kiki-e-tombo-boas-vindas.gif);
+    background-position: center;
+}
+.boas-vindas h2{
+    margin: 0;
+    font-size: 22px;
+    padding: 10px 0 2px 0;
+    color: #6273a9;
+}
+.boas-vindas h2 span{
+    font-size: 14px;
+    padding: 1px 10px;
+    background: rgb(155 179 236);
+    background: linear-gradient(137deg, rgb(138 179 243) 0%, rgb(245 176 199) 77%);
+    color: #fff;
+    border-radius: 10px;
+}
+.boas-vindas h3 {
+    color: #8ca4d8;
+    font-size: 15px;
+    font-weight: normal;
+    margin: 0 0 20px 0;
+}
+.boas-vindas h4{
+    margin: 10px 0;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #6273a9;
+}
+.boas-vindas ul{
+    list-style: none;
+    padding: 0 20px 0;
+    margin: 0 0 20px 0;
+}
+.boas-vindas ul li{
+    font-size: 14px;
+    margin: 8px 0;
+    color: #6273a9;
+}
+.boas-vindas ul li::before {
+  content: "\2022";
+  color: #8ca4d8;
+  font-weight: bold;
+  display: inline-block; 
+  width: 1em;
+  margin-left: -1em;
+}
+
+.boas-vindas h5{
+    margin: 10px 0;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #6273a9;
+}
+
+/*Radio*/
+fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    display: flex;
+}
+fieldset label {
+    width: 100%;
+}
+.radio-image label > input{
+    visibility: hidden;
+    border: 0;
+    opacity: 0;
+    margin: 0;
+    position: absolute;
+}
+.radio-image span, .player.adversario .icons span {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    border-radius: 50%;
+    padding: 0;
+    font-size: 28px;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 3px;
+    background: linear-gradient(to right, white, white), linear-gradient(to right, #d9e6fd , #f5d7e1);
+    background-clip: padding-box, border-box;
+    background-origin: padding-box, border-box;
+    border: 2px solid transparent;
+}
+
+
+/*Copy*/
+.copy{
+    position: absolute;
+    left: 50%;
+    margin-left: -175px;
+    bottom: -55px;
+    color: #9eabd5;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.copy p{
+    margin: 0;
+}
+.copy a{
+    margin: 0 2px 0 0;
+}
+.copy svg{
+    width: 30px;
+    fill: #9eabd5;
+    opacity: .5;
+}
+.copy a:first-child svg{
+    width: 35px;
+    
+}
+.copy a:first-child{
+    margin: 0;
+}
+.copy svg:hover{
+    opacity: 1;
+}
+.icons-copy{
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+/* Responsivo */
+@media only screen and (max-width: 1190px) {
+    .boas-vindas ul li br{
+        display: none;
+    }
+    .boas-vindas .foto{
+        width: 480px;
+    }
+}
+
+@media only screen and (max-width: 1080px) {
+    .main {
+/*                min-height: auto;*/
+        padding: 0 0 60px 0;
+    }
+    .boas-vindas-container{
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+    }
+    .boas-vindas .foto, .boas-vindas-container .text{
+        width: 80%;
+    }
+    .boas-vindas-container .text{
+        margin: 0 auto;
+    }
+    .boas-vindas h2{
+        margin-top: 15px;
+    }
+    .resultado{
+        min-width: 110px;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .container-game{
+        width: 80%;
+        padding: 20px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .container-game, .boas-vindas .foto, .boas-vindas-container .text{
+        width: 90%;
+    }
+    .placar{
+        padding: 4px 0;
+    }
+    .resultado {
+        min-width: 60px;
+        margin-top: 0;
+    }
+    .player .foto{
+        width: 90px;
+        height: 90px;
+    }
+    .radio-image span, .player.adversario .icons span, .player .foto div{
+        font-size: 24px;
+        width: 30px;
+        height: 30px;
+    }
+    
+    .game-over.visible .player .foto, .endgame.visible .player .foto, .game-empate.visible .player .foto{
+        width: 200px;
+        height: 200px;
+    }
+    .copy{
+        flex-direction: column;
+        margin-left: -124px;
+        bottom: -72px;
+    }
+}
+
+@media only screen and (max-width: 470px) {
+    .game-over.visible .player .foto, .endgame.visible .player .foto, .game-empate.visible .player .foto {
+        width: 150px;
+        height: 150px;
+    }
+    .boas-vindas h2{
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        font-size: 18px;
+    }
+    .boas-vindas h3{
+        font-size: 14px;
+    }
+    .boas-vindas h2 span{
+        margin-bottom: 4px;
+    }
+    .placar .valores div{
+        margin-top: 0;
+    }
+    
+    .radio-image span, .player.adversario .icons span{
+        margin: 8px 2px;
+    }
+    .escolhas h4{
+        font-size: 42px;
+    }
+    .resultado p{
+        font-size: 15px;
+    }
+}
+
+@media only screen and (max-width: 370px) {
+    .container-game, .boas-vindas .foto, .boas-vindas-container .text{
+        width: 94%;
+    }
+    .player .foto div{
+        right: -14px;
+    }
+    .player.adversario .foto div{
+        left: -14px;
+    }
+    .radio-image span, .player.adversario .icons span, .player .foto div{
+        font-size: 20px;
+        width: 27px;
+        height: 27px;
+    }
+    .resultado p, .placar .valores div span{
+        font-size: 12px;
+    }
+    .placar h3{
+        font-size: 18px;
+    }
+    .placar .valores div p{
+        font-size: 13px;
+    }
+    
+}
+
