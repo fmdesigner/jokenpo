@@ -3,7 +3,7 @@
 ✨ Projeto pessoal | Jogo de Jokenpô criado em JavaScript <br>
 🎮 Teste suas habilidades contra o computador, escolhendo entre pedra, papel e tesoura. <br>
 
-💻 
+💻 <a href="https://fmdesigner.github.io/jokenpo/">Jogar!</a>
 
 ### Tecnologias usadas
 <br>
